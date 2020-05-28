@@ -1,2 +1,2 @@
 # TIMBR_data
-Data for the TIMBR manuscript. See "readme.txt" for information about these files; see the wesleycrouse/TIMBR repository for more information about the R package.
+Data and code for the TIMBR manuscript, which introduces the R package in the wesleycrouse/TIMBR repository. See "readme.txt" for a description of these files.
