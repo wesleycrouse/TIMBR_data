@@ -239,6 +239,42 @@ for (i in 1:length(strategies)){
 dev.off()
 
 ####################
+#accuracy - posterior.M - exponential
+
+accuracy <- aggregate(posterior.M ~ strategy + alleles + alpha + var.exp, data=results.full[results.full$strategy %in% strategies,], FUN=function(x){unlist(t.test(x)[c("estimate", "conf.int")])})  
+accuracy <- cbind(accuracy[,1:4], accuracy$posterior.M)
+colnames(accuracy)[-c(1:4)] <- c("posterior.M", "lower", "upper")
+
+for (A in c(0.1, 1, 10)){
+  png(filename = paste0("fig_3_2_e_", A, "_posterior_M.png"), width = 960, height = 480)
+  
+  par(mfrow = c(1, 2))
+  
+  for (v in c(0.1, 0.5)){
+    plot(c(), c(), ylim=c(0,1), xlim=c(1,8), las=1, xlab="Number of Alleles", ylab = "Posterior Certainty", frame.plot=T, cex.lab=1.5, cex.axis=1.3,
+         main=paste0("QTL Effect Size: ", v))
+    
+    for (h in (1:4)/5){
+      abline(h=h, lty=2, col=scales::alpha("black", 0.3))
+    }
+    
+    for (i in 1:length(strategies)){
+      data.subset <- accuracy[accuracy$strategy==strategies[i] & accuracy$alpha==A & accuracy$var.exp==v, c("alleles", "posterior.M", "lower", "upper")]
+      
+      polygon(c(data.subset$alleles,rev(data.subset$alleles)), c(data.subset$lower,rev(data.subset$upper)), col=scales::alpha(colors[i], alpha=0.3), density=NA)
+      lines(data.subset$alleles, data.subset[,2], lwd=3, col=colors[i])
+      points(data.subset$alleles, data.subset[,2], col=colors[i], pch=16)
+      
+    }
+  }
+  
+  legend(1, 0.2, legend=c("CRP", "Tree", "Misspecified", "Incorrect"), col=c("orange", "blue", "purple", "red"), lty=1)
+  
+  dev.off()
+  
+}
+
+####################
 #error - MSE - exponential
 
 colors <- c("orange", "blue", "red", "purple", "green", "black")
