@@ -31,9 +31,15 @@ prior.uniform <- table(sapply(ewenss.calc(8, list(type="gamma", shape=1, rate=1)
 
 pdf(file = "fig_3_0_prior.pdf", width=7, height=7)
 
-plot(1:8, prior.gamma, type="l", lty=5, col="grey", ylim=c(0,1), 
-     ylab="Prior Probability", xlab="Number of Alleles", main="Prior Distribution of Alleles",
+plot(c(), c(), ylim=c(0,1), xlim=c(1,8),
+     ylab="Prior Probability", xlab="Number of Alleles", main="Prior Distribution of Number of Alleles",
      cex.lab=1.4, cex.axis=1.2, cex.main=1.5, lwd=3)
+
+for (h in (1:5)/5){
+  abline(h=h, lty=2, col=scales::alpha("black", 0.3))
+}
+
+lines(1:8, prior.gamma, lty=5, lwd=3, col="grey")
 points(1:8, prior.gamma, pch=22, cex=1.5, bg="grey")
 lines(1:8, prior.exp, lty=5, lwd=3, col="orange")
 points(1:8, prior.exp, pch=22, cex=1.5, bg="orange")
@@ -41,8 +47,8 @@ lines(1:8, prior.uniform, lty=5, lwd=3, col="darkcyan")
 points(1:8, prior.uniform, pch=22, cex=1.5, bg="darkcyan")
 
 legend(1, legend=c("Uniform", "Gamma", "Exponential"), 
-       col=c("darkcyan", "grey", "orange"), bg="white", 
-       lty=5, lwd=3, cex=1.4)
+       fill=c("darkcyan", "grey", "orange"), bg="white", 
+       cex=1.2)
 
 dev.off()
 
@@ -55,16 +61,16 @@ accuracy <- aggregate(accuracy ~ strategy + alleles + alpha + var.exp, data=resu
 
 pdf(file = "fig_3_1_accuracy.pdf", width = 14, height = 7)
 
-par(mfrow = c(1, 2))
+par(mfrow = c(1, 2), oma = c(0, 0, 2, 0))
 
 for (v in c(0.1, 0.5)){
   for (A in c(1)){
     plot(c(), c(), ylim=c(0,1), xlim=c(1,8), 
-         las=1, cex.lab=1.4, cex.axis=1.2, cex.main=1.5, frame.plot=T,
+         las=1, cex.lab=1.4, cex.axis=1.2, cex.main=1.4, font.main = 1, frame.plot=T,
          xlab="Number of Alleles", ylab = "0-1 Accuracy",
          main=paste0("QTL Effect Size: ", v))
     
-    for (h in (1:4)/5){
+    for (h in (1:5)/5){
       abline(h=h, lty=2, col=scales::alpha("black", 0.3))
     }
     
@@ -81,9 +87,11 @@ for (v in c(0.1, 0.5)){
   }
 }
 
-legend(1, 0.25, legend=c("Uniform", "Gamma", "Exponential"), 
-       col=c("darkcyan", "grey", "orange"), bg="white", 
-       lty=1, lwd=3, cex=1.4)
+legend(1, 0.2, legend=c("Uniform", "Gamma", "Exponential"), 
+       fill=c("darkcyan", "grey", "orange"), bg="white", 
+       cex=1.2)
+
+mtext("Accuracy of Posterior Allelic Series", outer = TRUE, cex = 1.5, font=2)
 
 dev.off()
 
@@ -96,16 +104,16 @@ colnames(accuracy)[-c(1:4)] <- c("posterior.M", "lower", "upper")
 
 pdf(file = "fig_3_2_posterior_M.pdf", width = 14, height = 7)
 
-par(mfrow = c(1, 2))
+par(mfrow = c(1, 2), oma = c(0, 0, 2, 0))
 
 for (v in c(0.1, 0.5)){
   for (A in c(1)){
     plot(c(), c(), ylim=c(0,1), xlim=c(1,8), 
-         las=1, cex.lab=1.4, cex.axis=1.2, cex.main=1.5, frame.plot=T,
+         las=1, cex.lab=1.4, cex.axis=1.2, cex.main=1.4, font.main = 1, frame.plot=T,
          xlab="Number of Alleles", ylab = "Posterior Certainty", 
          main=paste0("QTL Effect Size: ", v))
     
-    for (h in (1:4)/5){
+    for (h in (1:5)/5){
       abline(h=h, lty=2, col=scales::alpha("black", 0.3))
     }
     
@@ -120,9 +128,11 @@ for (v in c(0.1, 0.5)){
   }
 }
 
-legend(5, 1, legend=c("Uniform", "Gamma", "Exponential"), 
-       col=c("darkcyan", "grey", "orange"), bg="white", 
-       lty=1, lwd=3, cex=1.4)
+legend(5.75, 1, legend=c("Uniform", "Gamma", "Exponential"), 
+       fill=c("darkcyan", "grey", "orange"), bg="white", 
+       cex=1.2)
+
+mtext("Posterior Certainty of Correct Allelic Series", outer = TRUE, cex = 1.5, font=2)
 
 dev.off()
 
@@ -135,12 +145,12 @@ colnames(accuracy)[-c(1:4)] <- c("exp.K", "lower", "upper")
 
 pdf(file = "fig_3_3_exp_K.pdf", width = 14, height = 7)
 
-par(mfrow = c(1, 2))
+par(mfrow = c(1, 2), oma = c(0, 0, 2, 0))
 
 for (v in c(0.1, 0.5)){
   for (A in c(1)){
     plot(c(), c(), ylim=c(1,8), xlim=c(1,8), 
-         las=1, cex.lab=1.4, cex.axis=1.2, cex.main=1.5, frame.plot=T,
+         las=1, cex.lab=1.4, cex.axis=1.2, cex.main=1.4, font.main = 1, frame.plot=T,
          xlab="Number of Alleles", ylab = "Expected Number of Alleles",
          main=paste0("QTL Effect Size: ", v))
     
@@ -156,16 +166,18 @@ for (v in c(0.1, 0.5)){
   }
 }
 
-legend(5, 2.5, legend=c("Uniform", "Gamma", "Exponential"), 
-       col=c("darkcyan", "grey", "orange"), bg="white", 
-       lty=1, lwd=3, cex=1.4)
+legend(5.75, 2.5, legend=c("Uniform", "Gamma", "Exponential"), 
+       fill=c("darkcyan", "grey", "orange"), bg="white", 
+       cex=1.2)
+
+mtext("Posterior Expectation of Number of Alleles", outer = TRUE, cex = 1.5, font=2)
 
 dev.off()
 
 ####################
 #error - MSE
 
-colors <- c("grey", "orange", "darkcyan", "green", "black")
+colors <- c("grey", "orange", "darkcyan", "palegreen4", "black")
 strategies <- c("gamma.st.05.01", "exponential.st.5", "uniform", "known.M", "full")
 
 error <- aggregate(MSE ~ strategy + alleles + alpha + var.exp, data=results.full, FUN=function(x){unlist(t.test(x)[c("estimate", "conf.int")])})  
@@ -174,12 +186,12 @@ colnames(error)[-c(1:4)] <- c("MSE", "lower", "upper")
 
 pdf(file = "fig_3_5_MSE.pdf", width = 14, height = 7)
 
-par(mfrow = c(1, 2))
+par(mfrow = c(1, 2), oma = c(0, 0, 2, 0))
 
 for (v in c(0.1, 0.5)){
   for (A in c(1)){
     plot(c(), c(), ylim=c(0,0.4), xlim=c(1, 8), 
-         las=1, cex.lab=1.4, cex.axis=1.2, cex.main=1.5, frame.plot=T, 
+         las=1, cex.lab=1.4, cex.axis=1.2, cex.main=1.4, font.main = 1, frame.plot=T, 
          xlab="Number of Alleles", ylab = "Mean Squared Error",
          main=paste0("QTL Effect Size: ", v))
     
@@ -198,8 +210,10 @@ for (v in c(0.1, 0.5)){
 }
 
 legend(1, 0.4, legend=c("Uniform", "Gamma", "Exponential", "Full", "Known"), 
-       col=c("darkcyan", "grey", "orange", "black", "green"), bg="white", 
-       lty=1, lwd=3, cex=1.4)
+       fill=c("darkcyan", "grey", "orange", "black", "palegreen4"), bg="white", 
+       cex=1.2)
+
+mtext("Mean Squared Error of Haplotype Effects", outer = TRUE, cex = 1.5, font=2)
 
 dev.off()
 
@@ -214,16 +228,16 @@ A <- 1
 
 pdf(file = paste0("fig_3_1_e_", A, "_accuracy.pdf"), width = 14, height = 7)
 
-par(mfrow = c(1, 2))
+par(mfrow = c(1, 2), oma = c(0, 0, 2, 0))
 
 v <- 0.1
 
 plot(c(), c(), ylim=c(0,1), xlim=c(1,8), 
-     las=1, cex.lab=1.4, cex.axis=1.2, cex.main=1.5, frame.plot=T,
+     las=1, cex.lab=1.4, cex.axis=1.2, cex.main=1.4, font.main = 1, frame.plot=T,
      xlab="Number of Alleles", ylab = "0-1 Accuracy",
      main=paste0("QTL Effect Size: ", v))
 
-for (h in (1:4)/5){
+for (h in (1:5)/5){
   abline(h=h, lty=2, col=scales::alpha("black", 0.3))
 }
 
@@ -237,18 +251,18 @@ for (i in 1:length(strategies)){
   points(data.subset$alleles, data.subset[,2], col=colors[i], pch=16)
 }
 
-legend(5, 1, legend=c("CRP", "Tree", "Misspecified", "Incorrect"), 
-       col=c("orange", "blue", "purple", "red"), bg="white",
-       lty=1, lwd=3, cex=1.4)
+legend(5.75, 1, legend=c("CRP", "Tree", "Misspecified", "Incorrect"), 
+       fill=c("orange", "blue", "purple", "red"), bg="white",
+       cex=1.2)
 
 v <- 0.5
 
 plot(c(), c(), ylim=c(0,1), xlim=c(1,8), 
-     las=1, cex.lab=1.4, cex.axis=1.2, cex.main=1.5, frame.plot=T,
+     las=1, cex.lab=1.4, cex.axis=1.2, cex.main=1.4, font.main = 1, frame.plot=T,
      xlab="Number of Alleles", ylab = "0-1 Accuracy",
      main=paste0("QTL Effect Size: ", v))
 
-for (h in (1:4)/5){
+for (h in (1:5)/5){
   abline(h=h, lty=2, col=scales::alpha("black", 0.3))
 }
 
@@ -261,6 +275,8 @@ for (i in 1:length(strategies)){
   lines(data.subset$alleles, data.subset[,2], lwd=3, col=colors[i])
   points(data.subset$alleles, data.subset[,2], col=colors[i], pch=16)
 }
+
+mtext("Accuracy of Posterior Allelic Series", outer = TRUE, cex = 1.5, font=2)
 
 dev.off()
 
@@ -274,15 +290,15 @@ colnames(accuracy)[-c(1:4)] <- c("posterior.M", "lower", "upper")
 for (A in c(1)){
   pdf(file = paste0("fig_3_2_e_", A, "_posterior_M.pdf"), width = 14, height = 7)
   
-  par(mfrow = c(1, 2))
+  par(mfrow = c(1, 2), oma = c(0, 0, 2, 0))
   
   for (v in c(0.1, 0.5)){
     plot(c(), c(), ylim=c(0,1), xlim=c(1,8), 
-         las=1, cex.lab=1.4, cex.axis=1.2, cex.main=1.5, frame.plot=T,
+         las=1, cex.lab=1.4, cex.axis=1.2, cex.main=1.4, font.main = 1, frame.plot=T,
          xlab="Number of Alleles", ylab = "Posterior Certainty",
          main=paste0("QTL Effect Size: ", v))
     
-    for (h in (1:4)/5){
+    for (h in (1:5)/5){
       abline(h=h, lty=2, col=scales::alpha("black", 0.3))
     }
     
@@ -296,9 +312,11 @@ for (A in c(1)){
     }
   }
   
-  legend(1, 0.3, legend=c("CRP", "Tree", "Misspecified", "Incorrect"), 
-         col=c("orange", "blue", "purple", "red"), bg="white",
-         lty=1, lwd=3, cex=1.4)
+  legend(1, 0.25, legend=c("CRP", "Tree", "Misspecified", "Incorrect"), 
+         fill=c("orange", "blue", "purple", "red"), bg="white",
+         cex=1.2)
+  
+  mtext("Posterior Certainty of Correct Allelic Series", outer = TRUE, cex = 1.5, font=2)
   
   dev.off()
 }
@@ -306,7 +324,7 @@ for (A in c(1)){
 ####################
 #error - MSE - exponential
 
-colors <- c("orange", "blue", "red", "purple", "green", "black")
+colors <- c("orange", "blue", "red", "purple", "palegreen4", "black")
 strategies <- c("exponential.st.5", "exponential.st.5.tree", "exponential.st.5.tree.wrong", "exponential.st.5.tree.miss", "known.M", "full")
 
 error <- aggregate(MSE ~ strategy + alleles + alpha + var.exp, data=results.full, FUN=function(x){unlist(t.test(x)[c("estimate", "conf.int")])})  
@@ -317,11 +335,11 @@ A <- 1
 
 pdf(file = paste0("fig_3_5_e_", A, "_MSE.pdf"), width = 14, height = 7)
 
-par(mfrow = c(1, 2))
+par(mfrow = c(1, 2), oma = c(0, 0, 2, 0))
 
 for (v in c(0.1, 0.5)){
   plot(c(), c(), ylim=c(0,0.4), xlim=c(1, 8), 
-       las=1, cex.lab=1.4, cex.axis=1.2, cex.main=1.5, frame.plot=T,
+       las=1, cex.lab=1.4, cex.axis=1.2, cex.main=1.4, font.main = 1, frame.plot=T,
        xlab="Number of Alleles", ylab = "Mean Squared Error",
        main=paste0("QTL Effect Size: ", v))
   
@@ -339,7 +357,9 @@ for (v in c(0.1, 0.5)){
 }
 
 legend(1, 0.4, legend=c("CRP", "Tree", "Misspecified", "Incorrect", "Full", "Known"), 
-       col=c("orange", "blue", "purple", "red", "black", "green"), bg="white", 
-       lty=1, lwd=3, cex=1.4)
+       fill=c("orange", "blue", "purple", "red", "black", "palegreen4"), bg="white", 
+       cex=1.2)
+
+mtext("Mean Squared Error of Haplotype Effects", outer = TRUE, cex = 1.5, font=2)
 
 dev.off()
