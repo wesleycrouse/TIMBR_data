@@ -56,16 +56,16 @@ for (k in (ncol(A)+1):nrow(A)){
 prior.D <- list(P=P, A=A, fixed.diplo=F)
 
 #call TIMBR with full model
-prior.M <- list(model.type="fixed", M.IDs=paste(0:14, collapse=","))
-results.full <- TIMBR(y, prior.D, prior.M, samples=100000)
-save(results.full, file="results_full_locus1.RData")
-#load("results_full_locus1.RData")
+#prior.M <- list(model.type="fixed", M.IDs=paste(0:14, collapse=","))
+#results.full <- TIMBR(y, prior.D, prior.M, samples=100000)
+#save(results.full, file="results_full_locus1.RData")
+load("results_full_locus1.RData")
 
 #call TIMBR with CRP model
-prior.M <- list(model.type="crp", prior.alpha.type="gamma", prior.alpha.shape=1, prior.alpha.rate=2.333415)
-results.crp <- TIMBR(y, prior.D, prior.M, samples=1000000)
-save(results.crp, file="results_crp_locus1.RData")
-#load("results_crp_locus1.RData")
+#prior.M <- list(model.type="crp", prior.alpha.type="gamma", prior.alpha.shape=1, prior.alpha.rate=2.333415)
+#results.crp <- TIMBR(y, prior.D, prior.M, samples=1000000)
+#save(results.crp, file="results_crp_locus1.RData")
+load("results_crp_locus1.RData")
 
 ####################
 #report statistics
@@ -107,8 +107,18 @@ mean(results.crp$post.K)
 results.crp$ln.BF - results.full$ln.BF
 
 ####################
+source("../plot_functions/plot_functions.R")
+
+####################
 #generate plots
-#distribution of number of alleles
+#combined locus1 plot
+
+pdf(file = "fig_dspr_locus1.pdf", width = 12, height = 3.6)
+par(mfrow = c(1, 3))
+
+new_mai <- c(0.6, 0.7, 0.4, 0.15)
+par(mai=new_mai)
+
 post.alleles <- rep(0, 15)
 names(post.alleles) <- 1:15
 
@@ -118,26 +128,65 @@ for (i in names(results.crp$p.K.given.y)){
 
 prior.alleles <- exp(sapply(1:15, TIMBR:::ln.K.prior.crp.marginalized, J=15, a=1, b=2.333415))
 
-png(filename = "fig_dspr_locus1_alleles.png", width = 600, height = 600)
+df.plot <- barplot(rep(NA,15), 
+                   xlab="Number of Alleles", 
+                   xaxt='n',
+                   cex.lab=1.4, cex.axis=1.2, cex.main=1.5, ylim=c(0,1),
+                   las=1)
 
-df.plot <- barplot(post.alleles, xlab="Number of Alleles", ylab="Posterior Probability", main="CG10245", cex.lab=1.5, cex.axis=1.2, cex.main=1.5, ylim=c(0,1))
-lines(df.plot, prior.alleles, lty=5)
-points(df.plot, prior.alleles, pch=15)
+title(main="Distribution of Alleles", font.main=1, cex.main=1.5)
+title(ylab="Probability", line=3.5, cex.lab=1.4)
+axis(1, at=df.plot[1 + 0:7*2,1], tick=F, labels=1 + 0:7*2, cex.axis=1.2)
 
-dev.off()
+for (h in (1:5)/5){
+  abline(h=h, lty=2, col=scales::alpha("black", 0.3))
+}
 
-#haplotype effects
+df.plot <- barplot(post.alleles, add=T, 
+                   yaxt='n', xaxt='n', ann=FALSE,
+                   col=scales::alpha("orange", 0.8))
+
+lines(df.plot, prior.alleles, lty=5, lwd=1.2, col="orange")
+points(df.plot, prior.alleles, pch=22, cex=1.2, bg="orange")
+
+legend_homebrew("topright", inset=.02, legend=c("CRP Posterior", "CRP Prior"),
+                fill=c(scales::alpha("orange", 0.8), NA),
+                border=c("black", "white"),
+                bg="white",
+                cex=1.2,
+                pch=c(NA,22),
+                pt.bg=c(NA, "orange"),
+                lwd=1.2,
+                lty=c(NA,5),
+                col=c(NA, "orange"))
+
+box()
+
+put.fig.letter("A", "topleft", font=2, cex=2, offset=c(0.01,-0.01))
+
 hap.names <- colnames(A)
 hap.names[8] <- "AB8"
 
-png(filename = "fig_dspr_locus1_haplotypes.png", width = 960, height = 480)
+TIMBR.plot.haplotypes(results.full, hap.labels=hap.names, x.lim=c(-5,5), x.lab=phenotype.var,
+                      cex.lab=1.4, cex.axis=1.2, cex.main=1.4, font.main = 1,
+                      y.lab="",
+                      colors=rep(scales::alpha("#4D4D4D", 0.8), 15))
+title(main="Full", cex.main=1.5)
+title(ylab="Haplotype", line=4, cex.lab=1.4)
 
-par(mfrow = c(1, 2))
+box()
 
-TIMBR.plot.haplotypes(results.full, hap.labels=hap.names, x.lim=c(-5,5), x.lab=phenotype.var)
-title(main="Full Model")
+put.fig.letter("B", "topleft", font=2, cex=2, offset=c(0.01,-0.01))
 
-TIMBR.plot.haplotypes(results.crp, hap.labels=hap.names, x.lim=c(-5,5), x.lab=phenotype.var)
-title(main="CRP Model")
+TIMBR.plot.haplotypes(results.crp, hap.labels=hap.names, x.lim=c(-5,5), x.lab=phenotype.var,
+                      cex.lab=1.4, cex.axis=1.2, cex.main=1.4, font.main = 1,
+                      y.lab="",
+                      colors=rep(scales::alpha("orange", 0.8),15))
+title(main="CRP", cex.main=1.5)
+title(ylab="Haplotype", line=4, cex.lab=1.4)
+
+box()
+
+put.fig.letter("C", "topleft", font=2, cex=2, offset=c(0.01,-0.01))
 
 dev.off()
