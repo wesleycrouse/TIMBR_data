@@ -1,3 +1,5 @@
+TIMBR_supplement.pdf - the supplemental text, figures, and tables for the TIMBR manuscript
+
 TIMBR-master.zip - frozen version of the 'TIMBR' R package, also available at https://github.com/wesleycrouse/TIMBR/
 install_TIMBR.R - script for installing TIMBR, either locally or from GitHub
 
